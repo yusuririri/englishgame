@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<!DOCTYPE html>
+<html lang="ja" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>神経衰弱</title>
+    <style media="screen">
+     *{
+       margin: 0;
+       padding: 0;
+     }
+     body{
+       background: #E7FAFE;
+     }
+     a{
+       color: #666;
+     }
+      #field{
+        width: 90%;
+        display: flex;
+        flex-wrap: wrap;
+        margin: 20px auto;
+        background: #fff;
+        border-radius: 10px;
+        padding: 15px;
+     }
+      #title{
+        text-align: center;
+        padding: 20px;
+        margin-bottom: 30px;
+        font-size: 40px;
+        color: #fff;
+        background-color: #FBE475;
+      }
+      #text{
+        text-align: center;
+        font-size: 30px;
+        margin: 20px;
+        color: #666;
+      }
+      #link{
+        text-align: center;
+        color: #666;
+        font-size: 20px;
+      }
+        .card,.open{
+          width: 140px;
+          height: 200px;
+          border: 2px solid #aaa;
+          border-radius: 5px;
+          margin: 10px auto;
+          padding: 5px;
+          transform-style: preserve-3d;
+          transition: transform .8s;
+          transform: rotateY(180deg);
+          cursor: pointer;
+        }
+        .card{
+          background-image: url('img/0.png');
+        }
+        .open{
+            transform: rotateY(360deg);
+        }
+
+    </style>
+  </head>
+  <body>
+    <div id="title">英単語神経衰弱
+    <p id="link">※音が出ます</p></div>
+    <p id ="text">カードを選んでね</p>
+    <div id="field">
+    </div>
+    <p id="text"><a href="index2.html">その２へ</a></p>
+    <p id="link"><a href="https://otologic.jp/" target="brank">効果音：OtoLogic様</a></p>
+  </body>
+  <script>
+
+function rand(min,max)
+{
+  return Math.floor(Math.random()*(max-min+1))+min;
+}
+let cards = [
+  ['ace', "url('img/1.png')"],
+  ['ace', "url('img/2.png')"],
+  ['cake', "url('img/3.png')"],
+  ['cake', "url('img/4.png')"],
+  ['cube', "url('img/5.png')"],
+  ['cube', "url('img/6.png')"],
+  ['cute', "url('img/7.png')"],
+  ['cute', "url('img/8.png')"],
+  ['eve', "url('img/9.png')"],
+  ['eve', "url('img/10.png')"],
+  ['game', "url('img/11.png')"],
+  ['game', "url('img/12.png')"],
+  ['hole', "url('img/13.png')"],
+  ['hole', "url('img/14.png')"],
+  ['home', "url('img/15.png')"],
+  ['home', "url('img/16.png')"],
+  ['ice', "url('img/17.png')"],
+  ['ice', "url('img/18.png')"],
+  ['june', "url('img/19.png')"],
+  ['june', "url('img/20.png')"],
+];
+
+
+for(let i = cards.length-1; i>0; i--)
+{
+  let r = rand(0,i);
+  let tmp = cards[i];
+  cards[i] = cards[r];
+  cards[r] = tmp;
+}
+
+let field = document.getElementById("field");
+
+for(let i=0; i<cards.length; i++)
+{
+  let elm = document.createElement("div");
+  elm.className = "card";
+  elm.index = i;
+  elm.onclick = click;
+  field.appendChild(elm);
+}
+let first = null;
+let second = null;
+let timer = null;
+let count = null;
+let text = document.getElementById("text");
+let aud;
+
+    function PlaySound() {
+      aud = new Audio();
+      aud.src = "bgm/Buzzer.mp3";
+      aud.play();
+    }
+    function Sound() {
+      aud = new Audio();
+      aud.src = "bgm/Results.mp3";
+      aud.play();
+    }
+    function Pop() {
+      aud = new Audio();
+      aud.src = "bgm/pop.mp3";
+      aud.play();
+    }
+
+function click(e)
+{
+  if(timer)
+  {
+    clearTimeout(timer);
+    judge();
+  }
+  let elm = e.target;
+  elm.word =  cards[elm.index][0];
+  let pic = cards[elm.index][1];
+  elm.className = "open";
+  elm.style.backgroundImage = pic;
+
+  if(!first)
+  {
+    first = elm;
+  }
+  else if(first.index == elm.index)
+  {
+    return;
+  }
+  else if(count == 9){
+    text.innerHTML = "おめでとう！";
+    Sound();
+  }
+  else {
+    second = elm;
+    timer = setTimeout(judge, 1000);
+  }
+
+}
+function judge()
+{
+  if(first.word == second.word)
+  {
+    text.innerHTML = "正解！";
+    PlaySound();
+    count++;
+  } else {
+
+      first.style.backgroundImage = "";
+      first.className = "card";
+      second.className = "card";
+      second.style.backgroundImage = "";
+      text.innerHTML = "カードを選んでね";
+      Pop();
+
+  }
+  first = null;
+  second = null;
+  timer = null;
+
+}
+  </script>
+</html>
